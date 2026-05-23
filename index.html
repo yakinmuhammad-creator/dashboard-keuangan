@@ -23,10 +23,95 @@
         .bg-red { background-color: #e74c3c; }
         .bg-blue { background-color: #2980b9; }
         .bg-yellow { background-color: #f1c40f; color: #333; }
-        .alert-box { background-color: #e8f4f8; color: #2c3e50; padding: 15px; border-radius: 6px; border-left: 5px solid #3498db; font-size: 14px; margin-top: 20px; line-height: 1.5;}
-        .alert-box strong { color: #2980b9; }
         #saveNotification { position: fixed; top: 20px; right: 20px; background: #27ae60; color: white; padding: 10px 20px; border-radius: 5px; font-size: 14px; opacity: 0; transition: opacity 0.5s; pointer-events: none; z-index: 1000; }
         @media (max-width: 768px) { .grid-layout { grid-template-columns: 1fr; } }
+
+        /* === REKOMENDASI STYLES === */
+        .rekomendasi-wrapper { margin-top: 10px; }
+
+        .status-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 18px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+        }
+        .status-header .status-icon { font-size: 32px; }
+        .status-header .status-text { line-height: 1.3; }
+        .status-header .status-sub { font-size: 13px; font-weight: normal; opacity: 0.9; margin-top: 3px; }
+
+        .status-survival { background: linear-gradient(135deg, #c0392b, #e74c3c); }
+        .status-stabilisasi { background: linear-gradient(135deg, #d35400, #e67e22); }
+        .status-ekspansi { background: linear-gradient(135deg, #1e8449, #27ae60); }
+
+        .rekomendasi-list { display: flex; flex-direction: column; gap: 12px; }
+
+        .rec-item {
+            display: flex;
+            gap: 14px;
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 14px 16px;
+            align-items: flex-start;
+            transition: box-shadow 0.2s;
+        }
+        .rec-item:hover { box-shadow: 0 3px 10px rgba(0,0,0,0.08); }
+
+        .rec-item.prioritas-tinggi { border-left: 5px solid #e74c3c; }
+        .rec-item.prioritas-sedang { border-left: 5px solid #f1c40f; }
+        .rec-item.prioritas-baik   { border-left: 5px solid #27ae60; }
+
+        .rec-icon { font-size: 22px; min-width: 30px; text-align: center; margin-top: 2px; }
+        .rec-body { flex: 1; }
+        .rec-judul { font-weight: bold; font-size: 15px; color: #2c3e50; margin-bottom: 4px; }
+        .rec-detail { font-size: 13.5px; color: #555; line-height: 1.6; }
+        .rec-detail ul { margin: 6px 0 0 0; padding-left: 18px; }
+        .rec-detail ul li { margin-bottom: 3px; }
+        .rec-aksi {
+            display: inline-block;
+            margin-top: 8px;
+            background: #2c3e50;
+            color: white;
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        .rec-aksi.aksi-merah { background: #e74c3c; }
+        .rec-aksi.aksi-kuning { background: #d68910; }
+        .rec-aksi.aksi-hijau { background: #1e8449; }
+
+        .divider-label {
+            text-align: center;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            color: #aaa;
+            margin: 18px 0 10px;
+            text-transform: uppercase;
+        }
+
+        .summary-bar {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+        }
+        .summary-pill {
+            flex: 1;
+            min-width: 120px;
+            background: #ecf0f1;
+            border-radius: 8px;
+            padding: 10px 14px;
+            text-align: center;
+        }
+        .summary-pill .sp-label { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 1px; }
+        .summary-pill .sp-value { font-size: 16px; font-weight: bold; color: #2c3e50; margin-top: 4px; }
     </style>
 </head>
 <body>
@@ -68,8 +153,8 @@
     </div>
 
     <div class="section-title" style="background-color: #e67e22;">BAB III: Rekomendasi Kebijakan Ekonomi</div>
-    <div id="rekomendasiKebijakan" class="alert-box" style="border-left: 5px solid #e67e22; background-color: #fef5e7;">
-        <strong>Memuat analisis posisi ekonomi...</strong>
+    <div id="rekomendasiKebijakan" class="rekomendasi-wrapper">
+        <p style="color:#aaa; text-align:center;">Memuat analisis posisi ekonomi...</p>
     </div>
 </div>
 
@@ -100,6 +185,246 @@
         hitungSemua(false);
     }
 
+    function buatItemRekomendasi(prioritas, icon, judul, detail, labelAksi, kelasAksi) {
+        return `
+        <div class="rec-item prioritas-${prioritas}">
+            <div class="rec-icon">${icon}</div>
+            <div class="rec-body">
+                <div class="rec-judul">${judul}</div>
+                <div class="rec-detail">${detail}</div>
+                ${labelAksi ? `<span class="rec-aksi ${kelasAksi}">${labelAksi}</span>` : ''}
+            </div>
+        </div>`;
+    }
+
+    function generateRekomendasi(X, C, I, M, tabungan, emas, pensiun, motor, sisaUtang, neraca, rasioUtang, asetLikuid, dayaTahan, netWorth) {
+
+        let items = [];
+        let fase, faseSub, faseKelas, faseIcon;
+
+        // ── Tentukan Fase ──
+        if (dayaTahan < 3) {
+            fase = "FASE MERAH — Survival (Bertahan Hidup)";
+            faseSub = "Posisi keuangan saat ini rentan. Fokus utama: selamatkan arus kas dan bangun benteng darurat dulu.";
+            faseKelas = "status-survival";
+            faseIcon = "🔴";
+        } else if (dayaTahan < 6) {
+            fase = "FASE KUNING — Stabilisasi (Konsolidasi)";
+            faseSub = "Keuangan mulai stabil namun belum kuat. Fokus: perkuat cadangan dan tata utang sebelum ekspansi.";
+            faseKelas = "status-stabilisasi";
+            faseIcon = "🟡";
+        } else {
+            fase = "FASE HIJAU — Ekspansi (Tumbuh & Berkembang)";
+            faseSub = "Fondasi keuangan sudah kuat. Saatnya mempercepat pertumbuhan kekayaan secara aktif.";
+            faseKelas = "status-ekspansi";
+            faseIcon = "🟢";
+        }
+
+        // ── Ringkasan Angka Kunci ──
+        let surplusPerBulan = neraca >= 0 ? neraca : 0;
+        let targetDarurat = (C + M) * 6;
+        let kurangDanaDarurat = Math.max(0, targetDarurat - asetLikuid);
+        let bulanLunasiUtang = (surplusPerBulan > 0 && sisaUtang > 0) ? Math.ceil(sisaUtang / surplusPerBulan) : null;
+
+        let summaryHTML = `
+        <div class="summary-bar">
+            <div class="summary-pill">
+                <div class="sp-label">Surplus Bulanan</div>
+                <div class="sp-value" style="color:${neraca>=0?'#27ae60':'#e74c3c'}">${formatRupiah(neraca)}</div>
+            </div>
+            <div class="summary-pill">
+                <div class="sp-label">Dana Darurat</div>
+                <div class="sp-value">${dayaTahan.toFixed(1)} / 6 bln</div>
+            </div>
+            <div class="summary-pill">
+                <div class="sp-label">Rasio Utang</div>
+                <div class="sp-value" style="color:${rasioUtang>30?'#e74c3c':rasioUtang>20?'#d68910':'#27ae60'}">${rasioUtang.toFixed(1)}%</div>
+            </div>
+            <div class="summary-pill">
+                <div class="sp-label">Kekayaan Bersih</div>
+                <div class="sp-value" style="color:${netWorth>=0?'#27ae60':'#e74c3c'}">${formatRupiah(netWorth)}</div>
+            </div>
+        </div>`;
+
+        // ══════════════════════════════════════
+        //  KONDISI & REKOMENDASI KONKRIT
+        // ══════════════════════════════════════
+
+        // 1. ARUS KAS — DEFISIT
+        if (neraca < 0) {
+            let kurang = Math.abs(neraca);
+            items.push(buatItemRekomendasi('tinggi', '🚨', 'DARURAT: Arus Kas Defisit!',
+                `Pengeluaran melebihi pendapatan sebesar <b>${formatRupiah(kurang)}/bulan</b>. Ini sangat berbahaya karena artinya setiap bulan tabungan kamu terkikis.
+                <ul>
+                    <li>Audit semua pengeluaran konsumsi (C). Temukan mana yang bisa dipangkas minggu ini.</li>
+                    <li>Tunda semua alokasi investasi (I) sampai arus kas positif dulu.</li>
+                    <li>Cari tambahan pendapatan: freelance, jual barang tidak terpakai, atau lembur.</li>
+                    <li>Hubungi kreditur untuk negosiasi cicilan jika utang (M) terlalu besar.</li>
+                </ul>`,
+                '⚡ Aksi Segera', 'aksi-merah'));
+        }
+
+        // 2. ARUS KAS — SURPLUS KECIL
+        else if (neraca > 0 && neraca < X * 0.1) {
+            items.push(buatItemRekomendasi('tinggi', '⚠️', 'Surplus Terlalu Tipis (< 10% Pendapatan)',
+                `Surplus kamu hanya <b>${formatRupiah(neraca)}/bulan</b> (${((neraca/X)*100).toFixed(1)}% dari pendapatan). Ini terlalu sempit — satu kejadian darurat kecil bisa langsung defisit.
+                <ul>
+                    <li>Target ideal: surplus minimal 20% pendapatan = <b>${formatRupiah(X*0.2)}/bulan</b>.</li>
+                    <li>Cek apakah konsumsi (C) bisa dikurangi Rp ${formatRupiah(X*0.1)} per bulan.</li>
+                    <li>Pertimbangkan naikkan pendapatan melalui side income atau negosiasi gaji.</li>
+                </ul>`,
+                '📋 Tinjau Anggaran', 'aksi-kuning'));
+        }
+
+        // 3. ARUS KAS — SURPLUS BAIK
+        else if (neraca >= X * 0.2) {
+            items.push(buatItemRekomendasi('baik', '✅', 'Arus Kas Sehat — Surplus di Atas 20%',
+                `Bagus! Kamu menyisihkan <b>${formatRupiah(neraca)}/bulan</b>. Surplus ini harus langsung diarahkan ke tujuan finansial, bukan dibiarkan menganggur.
+                <ul>
+                    <li>Alokasikan surplus: 50% ke pelunasan utang, 30% ke investasi, 20% ke dana darurat (jika belum cukup).</li>
+                    <li>Aktifkan auto-debit ke rekening tabungan/investasi setiap tanggal gajian.</li>
+                </ul>`,
+                '💡 Optimalkan Surplus', 'aksi-hijau'));
+        }
+
+        // 4. DANA DARURAT — KURANG
+        if (dayaTahan < 3) {
+            items.push(buatItemRekomendasi('tinggi', '🛡️', 'Dana Darurat Kritis — Di Bawah 3 Bulan',
+                `Dana darurat kamu hanya cukup <b>${dayaTahan.toFixed(1)} bulan</b>. Standar minimum aman adalah 3 bulan, idealnya 6 bulan.
+                <ul>
+                    <li>Target dana darurat 3 bulan = <b>${formatRupiah((C+M)*3)}</b></li>
+                    <li>Target dana darurat 6 bulan = <b>${formatRupiah(targetDarurat)}</b></li>
+                    <li>Kamu masih butuh: <b>${formatRupiah(kurangDanaDarurat)}</b> lagi.</li>
+                    <li>Simpan di rekening terpisah yang tidak ada kartunya (rekening "terkunci").</li>
+                    <li>Jangan campurkan dana darurat dengan uang belanja harian.</li>
+                </ul>`,
+                '🔒 Prioritas #1', 'aksi-merah'));
+        } else if (dayaTahan < 6) {
+            items.push(buatItemRekomendasi('sedang', '🛡️', 'Dana Darurat Cukup, Belum Ideal',
+                `Dana darurat kamu <b>${dayaTahan.toFixed(1)} bulan</b> — sudah di atas minimum (3 bulan) tapi belum mencapai target ideal 6 bulan.
+                <ul>
+                    <li>Masih butuh tambahan: <b>${formatRupiah(kurangDanaDarurat)}</b> untuk mencapai 6 bulan.</li>
+                    <li>Sisihkan sebagian surplus bulanan khusus untuk melengkapi ini.</li>
+                    <li>Setelah tercapai, dana ini tidak boleh disentuh kecuali benar-benar darurat.</li>
+                </ul>`,
+                '📈 Tingkatkan', 'aksi-kuning'));
+        } else {
+            items.push(buatItemRekomendasi('baik', '🛡️', 'Dana Darurat Sudah Sangat Aman (6+ Bulan)',
+                `Dana darurat kamu <b>${dayaTahan.toFixed(1)} bulan</b> — ini sudah melampaui standar ideal. Sangat baik!
+                <ul>
+                    <li>Pertahankan level ini. Jangan gunakan untuk keperluan non-darurat.</li>
+                    <li>Surplus dana di atas 6 bulan bisa dialihkan ke investasi yang lebih produktif.</li>
+                </ul>`,
+                '✅ Pertahankan', 'aksi-hijau'));
+        }
+
+        // 5. RASIO UTANG
+        if (rasioUtang > 40) {
+            items.push(buatItemRekomendasi('tinggi', '💸', 'Beban Utang Terlalu Berat (> 40% Pendapatan)',
+                `Cicilan utang kamu mencapai <b>${rasioUtang.toFixed(1)}%</b> dari pendapatan. Ini sangat tinggi — standar sehat maksimal 30%, idealnya di bawah 20%.
+                <ul>
+                    <li>Ini adalah <b>prioritas utama</b> yang harus diselesaikan secepatnya.</li>
+                    <li>Gunakan metode "Avalanche": lunasi dulu utang dengan bunga tertinggi.</li>
+                    <li>Pertimbangkan konsolidasi utang (gabungkan beberapa utang menjadi satu dengan bunga lebih rendah).</li>
+                    <li>Hubungi bank/kreditur untuk restrukturisasi jika memungkinkan.</li>
+                    ${bulanLunasiUtang ? `<li>Dengan surplus saat ini, estimasi pelunasan utang: <b>${bulanLunasiUtang} bulan</b>.</li>` : ''}
+                </ul>`,
+                '🚩 Prioritas Tinggi', 'aksi-merah'));
+        } else if (rasioUtang > 20) {
+            items.push(buatItemRekomendasi('sedang', '💸', 'Beban Utang Perlu Diperhatikan (20–40%)',
+                `Cicilan utang kamu <b>${rasioUtang.toFixed(1)}%</b> dari pendapatan. Masih dalam batas toleransi namun perlu strategi aktif untuk menurunkannya.
+                <ul>
+                    <li>Alokasikan minimal 50% surplus bulanan untuk mempercepat pelunasan.</li>
+                    <li>Hindari menambah utang baru sampai rasio ini turun ke bawah 20%.</li>
+                    ${bulanLunasiUtang ? `<li>Estimasi lunas dalam <b>${bulanLunasiUtang} bulan</b> jika surplus diarahkan ke sini.</li>` : ''}
+                </ul>`,
+                '📉 Turunkan Utang', 'aksi-kuning'));
+        } else if (rasioUtang > 0) {
+            items.push(buatItemRekomendasi('baik', '💸', `Rasio Utang Sehat (${rasioUtang.toFixed(1)}%)`,
+                `Cicilan utang masih di bawah 20% pendapatan — posisi yang sangat terkontrol.
+                <ul>
+                    <li>Lanjutkan pelunasan sesuai jadwal.</li>
+                    ${bulanLunasiUtang ? `<li>Perkiraan lunas dalam <b>${bulanLunasiUtang} bulan</b> dengan surplus saat ini.</li>` : ''}
+                    <li>Setelah lunas, alihkan anggaran cicilan ke investasi.</li>
+                </ul>`,
+                '✅ Terkontrol', 'aksi-hijau'));
+        }
+
+        // 6. INVESTASI
+        let rasioInvestasi = X > 0 ? (I / X) * 100 : 0;
+        if (I === 0) {
+            items.push(buatItemRekomendasi('tinggi', '📊', 'Belum Ada Alokasi Investasi',
+                `Kamu belum mengalokasikan dana untuk investasi. Tanpa investasi, kekayaan tidak akan tumbuh mengalahkan inflasi.
+                <ul>
+                    <li>Mulai dari yang kecil: target minimal 10% pendapatan = <b>${formatRupiah(X*0.1)}/bulan</b>.</li>
+                    <li>Pilihan awal yang aman: Reksa Dana Pasar Uang atau deposito.</li>
+                    <li>Selesaikan dana darurat dulu, baru mulai investasi secara konsisten.</li>
+                </ul>`,
+                '📌 Mulai Segera', 'aksi-kuning'));
+        } else if (rasioInvestasi < 10) {
+            items.push(buatItemRekomendasi('sedang', '📊', `Investasi Masih Kecil (${rasioInvestasi.toFixed(1)}% dari Pendapatan)`,
+                `Alokasi investasi sebesar <b>${formatRupiah(I)}/bulan</b> (${rasioInvestasi.toFixed(1)}%) masih di bawah standar 10–20%.
+                <ul>
+                    <li>Coba tingkatkan bertahap: tambah Rp 200–500 ribu per bulan setiap 3 bulan sekali.</li>
+                    <li>Target ideal: <b>${formatRupiah(X*0.15)}/bulan</b> (15% pendapatan).</li>
+                </ul>`,
+                '📈 Naikkan Investasi', 'aksi-kuning'));
+        } else {
+            items.push(buatItemRekomendasi('baik', '📊', `Alokasi Investasi Sehat (${rasioInvestasi.toFixed(1)}%)`,
+                `Kamu sudah mengalokasikan <b>${formatRupiah(I)}/bulan</b> untuk investasi — ini sudah sangat baik!
+                <ul>
+                    <li>Pastikan investasi ini benar-benar dieksekusi (bukan hanya dicatat di sini).</li>
+                    <li>Diversifikasikan: jangan taruh semua di satu instrumen saja.</li>
+                    <li>Review portofolio minimal setiap 6 bulan.</li>
+                </ul>`,
+                '✅ Pertahankan', 'aksi-hijau'));
+        }
+
+        // 7. KEKAYAAN BERSIH NEGATIF
+        if (netWorth < 0) {
+            items.push(buatItemRekomendasi('tinggi', '📉', 'Kekayaan Bersih Negatif — Utang Lebih Besar dari Aset',
+                `Total utang kamu (<b>${formatRupiah(sisaUtang)}</b>) melebihi total aset yang dimiliki. Ini kondisi yang perlu segera diperbaiki.
+                <ul>
+                    <li>Jangan tambah utang baru dalam kondisi apapun.</li>
+                    <li>Fokus semua surplus untuk melunasi utang paling berbunga tinggi terlebih dahulu.</li>
+                    <li>Pertimbangkan menjual aset yang tidak produktif untuk melunasi utang.</li>
+                </ul>`,
+                '🚩 Perhatian Serius', 'aksi-merah'));
+        }
+
+        // 8. REKOMENDASI BERDASARKAN FASE
+        if (dayaTahan >= 6 && neraca >= X * 0.2 && rasioUtang <= 20) {
+            items.push(buatItemRekomendasi('baik', '🚀', 'Langkah Selanjutnya: Akselerasi Kekayaan',
+                `Posisi keuangan kamu sudah sangat solid. Saatnya bermain ofensif untuk mempercepat pertumbuhan kekayaan.
+                <ul>
+                    <li>Tingkatkan investasi ke instrumen yang lebih tinggi return: Reksa Dana Saham, obligasi, atau properti.</li>
+                    <li>Buka sumber pendapatan pasif baru: deposito, dividen, atau bisnis sampingan.</li>
+                    <li>Evaluasi dan buat target kekayaan bersih 1, 3, dan 5 tahun ke depan.</li>
+                    <li>Pertimbangkan konsultasi dengan perencana keuangan untuk optimasi pajak dan portofolio.</li>
+                </ul>`,
+                '🎯 Kembangkan Lebih Jauh', 'aksi-hijau'));
+        }
+
+        // ── Bangun HTML ──
+        let html = `
+        <div class="rekomendasi-wrapper">
+            <div class="status-header ${faseKelas}">
+                <div class="status-icon">${faseIcon}</div>
+                <div class="status-text">
+                    ${fase}
+                    <div class="status-sub">${faseSub}</div>
+                </div>
+            </div>
+            ${summaryHTML}
+            <div class="divider-label">📋 Rencana Aksi Konkrit</div>
+            <div class="rekomendasi-list">
+                ${items.join('')}
+            </div>
+        </div>`;
+
+        return html;
+    }
+
     function hitungSemua(showNotif = true) {
         let X = ambilAngka('inputX'), C = ambilAngka('inputC'), I = ambilAngka('inputI'), M = ambilAngka('inputM');
         let tabungan = ambilAngka('inputTabungan'), emas = ambilAngka('inputEmas'), pensiun = ambilAngka('inputPensiun'), motor = ambilAngka('inputMotor'), sisaUtang = ambilAngka('inputSisaUtang');
@@ -113,19 +438,33 @@
 
         let rasioUtang = X > 0 ? (M / X) * 100 : 0;
         document.getElementById('outRasioUtang').innerText = rasioUtang.toFixed(1) + "%";
-        
+        let badgeUtangClass = rasioUtang > 40 ? "bg-red" : (rasioUtang > 20 ? "bg-yellow" : "bg-green");
+        let badgeUtangText = rasioUtang > 40 ? "BERAT" : (rasioUtang > 20 ? "PERLU PERHATIAN" : "SEHAT");
+        document.getElementById('badgeUtang').className = "status-badge " + badgeUtangClass;
+        document.getElementById('badgeUtang').innerText = badgeUtangText;
+
         let asetLikuid = tabungan + emas;
         document.getElementById('outLikuid').innerText = formatRupiah(asetLikuid);
+
         let dayaTahan = (C + M) > 0 ? (asetLikuid / (C + M)) : 0;
         document.getElementById('outDarurat').innerText = dayaTahan.toFixed(1) + " Bulan";
         document.getElementById('badgeDarurat').className = "status-badge " + (dayaTahan >= 6 ? "bg-green" : (dayaTahan >= 3 ? "bg-blue" : "bg-red"));
         document.getElementById('badgeDarurat').innerText = dayaTahan >= 6 ? "SANGAT AMAN" : (dayaTahan >= 3 ? "CUKUP AMAN" : "RENTAN");
-        document.getElementById('outNetWorth').innerText = formatRupiah((asetLikuid + pensiun + motor) - sisaUtang);
 
-        // Rekomendasi
-        let status = dayaTahan < 3 ? "Fase Perjuangan (Survival)" : (dayaTahan < 6 ? "Fase Menengah (Stabilisasi)" : "Fase Maju (Ekspansi)");
-        let saran = dayaTahan < 3 ? "Fokus pada keamanan dasar: Pangkas biaya konsumsi (C) yang tidak esensial dan tahan dulu belanja investasi (I)." : (dayaTahan < 6 ? "Fokus pada konsolidasi: Mulailah mengalihkan surplus ke investasi produktif dan lunasi utang berbunga tinggi." : "Fokus pada akumulasi kekayaan: Saatnya melakukan ekspansi ke bisnis baru (Belanja Modal/Capex) untuk pertumbuhan jangka panjang.");
-        document.getElementById('rekomendasiKebijakan').innerHTML = `<strong>Status Ekonomi: ${status}</strong><br>${saran}`;
+        let netWorth = (asetLikuid + pensiun + motor) - sisaUtang;
+        document.getElementById('outNetWorth').innerText = formatRupiah(netWorth);
+
+        // Generate rekomendasi lengkap
+        document.getElementById('rekomendasiKebijakan').innerHTML = generateRekomendasi(
+            X, C, I, M, tabungan, emas, pensiun, motor, sisaUtang,
+            neraca, rasioUtang, asetLikuid, dayaTahan, netWorth
+        );
+
+        if (showNotif) {
+            let notif = document.getElementById('saveNotification');
+            notif.style.opacity = 1;
+            setTimeout(() => notif.style.opacity = 0, 2000);
+        }
     }
 
     window.onload = setNilaiAwal;
