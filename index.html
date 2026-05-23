@@ -458,93 +458,200 @@
     }
 
     function generateKartuNegara(X, C, I, M, neraca, rasioUtang, dayaTahan, netWorth, sisaUtang, tabungan, emas, pensiun, motor) {
-        // Hitung skor ekonomi (0–100)
-        let skorDarurat  = Math.min(dayaTahan / 6, 1) * 30;       // max 30 poin
-        let skorSurplus  = neraca >= 0 ? Math.min(neraca / (X * 0.3), 1) * 25 : 0; // max 25 poin
-        let skorUtang    = Math.max(0, 1 - rasioUtang / 60) * 25;  // max 25 poin
-        let skorNetWorth = netWorth > 0 ? Math.min(netWorth / (X * 12), 1) * 20 : 0; // max 20 poin
+        let skorDarurat  = Math.min(dayaTahan / 6, 1) * 30;
+        let skorSurplus  = neraca >= 0 ? Math.min(neraca / (X * 0.3), 1) * 25 : 0;
+        let skorUtang    = Math.max(0, 1 - rasioUtang / 60) * 25;
+        let skorNetWorth = netWorth > 0 ? Math.min(netWorth / (X * 12), 1) * 20 : 0;
         let skor = Math.round(skorDarurat + skorSurplus + skorUtang + skorNetWorth);
 
-        // Tentukan negara berdasarkan skor + kondisi khusus
         let negara, bendera, kelasCard, kelasTag, kelasMotivasi, deskripsi, motivasi, tags;
-        let pertumbuhan, negaraRank;
+        let pertumbuhan, negaraRank, gdpPerKapita;
 
-        // Deteksi kondisi spesifik untuk analogi yang lebih relate
-        let adaUtangBesar   = sisaUtang > X * 6;
-        let asetFisikBesar  = motor > X * 12;
-        let investasiNol    = I === 0;
-        let defisit         = neraca < 0;
+        // Urutan berdasarkan GDP per kapita nominal 2024 (IMF/World Bank)
+        // Zimbabwe $1.421 < Pakistan $1.644 < India $2.731 < Mesir $3.440 <
+        // Filipina $3.950 < Vietnam $4.163 < Indonesia $4.975 <
+        // Venezuela $7.450 < Thailand $7.827 < Brasil $10.400 <
+        // Malaysia $12.700 < China $13.400 < Rusia $14.700 <
+        // Saudi $31.100 < Korea $33.700 ≈ Jepang $33.800 <
+        // Jerman $54.300 < AS $80.000 < Singapura $88.000
 
-        if (skor <= 12 || (defisit && dayaTahan < 1)) {
-            negara = "Venezuela"; bendera = "🇻🇪";
-            pertumbuhan = "-2,9%"; negaraRank = "Ekonomi ke-47 dunia (2024)";
+        if (skor <= 4) {
+            negara = "Zimbabwe"; bendera = "🇿🇼";
+            pertumbuhan = "+2,0%"; gdpPerKapita = "$1.421/tahun";
+            negaraRank = "PDB per kapita ke-175 dunia (2024)";
             kelasCard = "nc-merah"; kelasTag = "merah"; kelasMotivasi = "mv-merah";
-            deskripsi = `Keluargamu saat ini sangat mirip <b>Venezuela</b> — bukan karena tidak punya apa-apa, tapi karena <b>pengeluaran terus melebihi pemasukan sampai cadangan terkuras</b>. Venezuela punya cadangan minyak terbesar di dunia, tapi setiap bulan pemerintahnya "nombok" untuk belanja rutin. Akhirnya? Inflasi meledak dan ekonomi kolaps. Keluargamu sedang mengalami pola yang sama: <b>arus kas minus, cadangan habis, utang terus bertambah</b>. Tapi Venezuela pun bangkit — dan kamu juga bisa.`;
-            tags = ["Pengeluaran > pemasukan tiap bulan", "Cadangan hampir terkuras habis", "Utang terus bertambah", "Butuh 'reformasi darurat' mulai sekarang"];
-            motivasi = `"Venezuela punya minyak terbanyak di dunia tapi tetap kolaps — bukan karena miskin, tapi karena bocor di pengelolaan. Langkah pertama: tutup kebocoran. Pangkas pengeluaran yang tidak perlu mulai bulan ini."`;
+            deskripsi = `Kondisi keuangan keluargamu sangat mirip <b>Zimbabwe</b> — negara dengan PDB per kapita hanya $1.421/tahun, salah satu terendah di dunia. Zimbabwe pernah mengalami inflasi 89,7 sextiliun persen karena <b>pengeluaran terus melebihi pemasukan</b> hingga cadangan habis total. Uang masuk langsung habis sebelum bisa ditabung, tidak ada cadangan, dan utang terus menumpuk. Persis seperti kondisimu: <b>arus kas minus parah, cadangan nol, dan keuangan terasa seperti berjalan di atas treadmill.</b>`;
+            tags = ["Arus kas minus sangat parah", "Nol cadangan tersisa", "Utang terus menumpuk", "Butuh restrukturisasi total segera"];
+            motivasi = `"Zimbabwe pernah jadi lumbung pangan Afrika sebelum kolaps — artinya potensi selalu ada. Langkah pertama bangkit: hentikan penambahan utang baru. Hari ini, bukan besok."`;
 
-        } else if (skor <= 25) {
-            negara = "Rusia"; bendera = "🇷🇺";
-            pertumbuhan = "+3,6%"; negaraRank = "Ekonomi ke-11 dunia (2024)";
+        } else if (skor <= 10) {
+            negara = "Pakistan"; bendera = "🇵🇰";
+            pertumbuhan = "+2,4%"; gdpPerKapita = "$1.644/tahun";
+            negaraRank = "PDB per kapita ke-162 dunia (2024)";
             kelasCard = "nc-merah"; kelasTag = "merah"; kelasMotivasi = "mv-merah";
-            deskripsi = `Keluargamu mirip <b>Rusia</b> — negara yang <b>kaya sumber daya tapi terisolasi dan terkekang dari dalam</b>. Rusia punya gas, minyak, emas, dan aset berlimpah. Tapi cadangan likuidnya tergerus, investasinya terbatas, dan keuangannya terlalu bergantung pada satu sumber. Persis seperti kondisimu: <b>mungkin kamu punya aset fisik atau penghasilan yang lumayan, tapi uang tunai tipis, cicilan menguras setiap bulan, dan keuangan terasa "terkepung"</b>. Sumber daya ada — tinggal soal membebaskan diri dari beban yang mengekang.`;
-            tags = ["Aset ada tapi kurang likuid", "Cadangan tunai sangat tipis", "Terlalu bergantung satu sumber penghasilan", "Perlu bebaskan diri dari cicilan berat"];
-            motivasi = `"Rusia punya semua sumber daya, tapi kekuatannya terbatas karena terkekang. Kamu pun punya potensi besar — mulai bebaskan diri: lunasi cicilan termahal dulu, baru buka peluang baru."`;
+            deskripsi = `Keluargamu mirip <b>Pakistan</b> — negara dengan PDB per kapita $1.644/tahun di mana <b>hampir seluruh pendapatan warganya habis untuk kebutuhan rutin dan cicilan</b> sehingga tidak ada yang tersisa untuk ditabung. Pakistan terus bolak-balik ke IMF karena tidak pernah punya buffer darurat. Persis seperti kondisimu: <b>gaji masuk, langsung habis untuk cicilan dan belanja — tidak ada yang nyangkut sama sekali.</b>`;
+            tags = ["Gaji masuk langsung habis", "Nol tabungan tersisa tiap bulan", "Cicilan utang sangat membebani", "Tidak ada buffer darurat sama sekali"];
+            motivasi = `"Pakistan punya potensi ekonomi besar tapi terjebak siklus utang. Cara keluarnya cuma satu: sisihkan dulu sebelum dibelanjakan, bukan tabung sisa belanja."`;
 
-        } else if (skor <= 40) {
-            negara = "Indonesia"; bendera = "🇮🇩";
-            pertumbuhan = "+5,0%"; negaraRank = "Ekonomi ke-16 dunia (2024)";
-            kelasCard = "nc-merah"; kelasTag = "merah"; kelasMotivasi = "mv-merah";
-            deskripsi = `Keluargamu sangat mirip <b>Indonesia</b> — dan ini bukan analogi sembarangan. Indonesia adalah negara <b>aktif dan tumbuh, tapi fondasinya belum sekokoh negara maju</b>: konsumsi domestik tinggi, cicilan utang ada, dan tabungan nasional belum optimal. Persis seperti kondisimu: <b>ada pemasukan rutin, ada aktivitas keuangan, tapi cadangan darurat belum cukup dan cicilan masih jadi beban signifikan</b>. Indonesia terus naik kelas dari tahun ke tahun — begitu pula kamu bisa.`;
-            tags = ["Pendapatan ada, konsumsi juga tinggi", "Cadangan darurat belum memadai", "Cicilan utang cukup membebani", "Aktif tapi fondasi perlu diperkuat"];
-            motivasi = `"Indonesia bangkit dari krisis 1998 dan jadi ekonomi terbesar ASEAN bukan karena keberuntungan — tapi karena disiplin membangun cadangan dan menata utang satu per satu. Kamu bisa lakukan hal yang sama."`;
-
-        } else if (skor <= 55) {
+        } else if (skor <= 17) {
             negara = "India"; bendera = "🇮🇳";
-            pertumbuhan = "+6,5%"; negaraRank = "Ekonomi ke-5 dunia (2024)";
-            kelasCard = "nc-kuning"; kelasTag = "kuning"; kelasMotivasi = "mv-kuning";
-            deskripsi = `Keluargamu seperti <b>India sekarang</b> — sedang dalam <b>momentum tumbuh yang nyata dan menarik perhatian dunia</b>. India dikenal sebagai ekonomi tumbuh tercepat di antara negara-negara besar karena <b>surplus mulai konsisten, investasi mulai aktif, dan kepercayaan dirinya sedang naik</b>. Tapi India juga masih punya gap antara yang sudah baik dan yang belum optimal. Persis seperti kamu — <b>keuanganmu sudah membaik, surplus terbentuk, tapi antara potensi dan realisasi masih ada jarak yang bisa diperpendek</b>.`;
-            tags = ["Surplus mulai konsisten tiap bulan", "Investasi sudah mulai berjalan", "Momentum pertumbuhan nyata ada", "Potensi besar yang belum sepenuhnya dioptimalkan"];
-            motivasi = `"India tidak menunggu semua masalahnya selesai dulu baru maju — mereka bergerak sambil memperbaiki. Itulah kenapa tumbuh 6,5% per tahun. Kamu punya momentum yang sama sekarang."`;
+            pertumbuhan = "+6,8%"; gdpPerKapita = "$2.731/tahun";
+            negaraRank = "PDB per kapita ke-139 dunia (2024)";
+            kelasCard = "nc-merah"; kelasTag = "merah"; kelasMotivasi = "mv-merah";
+            deskripsi = `Keluargamu seperti <b>India</b> — negara ekonomi ke-5 terbesar dunia tapi PDB per kapitanya masih $2.731/tahun karena penduduknya 1,4 miliar. India tumbuh 6,8% per tahun — <b>tercepat di antara negara besar dunia</b> — tapi sebagian besar warganya masih berjuang membangun cadangan dan investasi. Persis seperti kondisimu: <b>ada aktivitas dan pertumbuhan, tapi cadangan darurat belum ada dan tabungan masih sangat minim.</b>`;
+            tags = ["Ada pertumbuhan tapi cadangan belum ada", "Tabungan sangat minim", "Potensi besar yang belum terealisasi", "Perlu mulai menabung secara konsisten"];
+            motivasi = `"India tumbuh 6,8% per tahun — tercepat di dunia — dengan satu resep: mulai dari yang kecil, konsisten, dan tidak berhenti. Kamu bisa terapkan resep yang sama mulai bulan ini."`;
 
-        } else if (skor <= 68) {
+        } else if (skor <= 24) {
+            negara = "Mesir"; bendera = "🇪🇬";
+            pertumbuhan = "+2,7%"; gdpPerKapita = "$3.440/tahun";
+            negaraRank = "PDB per kapita ke-126 dunia (2024)";
+            kelasCard = "nc-merah"; kelasTag = "merah"; kelasMotivasi = "mv-merah";
+            deskripsi = `Keluargamu mirip <b>Mesir</b> — negara dengan PDB per kapita $3.440/tahun yang <b>punya aktivitas ekonomi cukup ramai tapi beban cicilan utangnya sangat besar</b> sehingga surplus langsung tersedot. Mesir punya Terusan Suez yang menghasilkan miliaran dolar, tapi tetap harus bolak-balik restrukturisasi utang. Persis seperti kondisimu: <b>ada pemasukan rutin, ada sedikit surplus, tapi cicilan utang menyedot hampir semua yang tersisa.</b>`;
+            tags = ["Pemasukan rutin ada", "Surplus tipis selalu tersedot cicilan", "Beban utang dominasi keuangan", "Perlu strategi percepat pelunasan"];
+            motivasi = `"Mesir punya Terusan Suez — aset strategis terbesar di dunia — tapi tetap tersandera utang. Pelajarannya: aset besar tidak cukup, arus kas harus lebih besar dari beban."`;
+
+        } else if (skor <= 31) {
+            negara = "Filipina"; bendera = "🇵🇭";
+            pertumbuhan = "+5,7%"; gdpPerKapita = "$3.950/tahun";
+            negaraRank = "PDB per kapita ke-120 dunia (2024)";
+            kelasCard = "nc-merah"; kelasTag = "merah"; kelasMotivasi = "mv-merah";
+            deskripsi = `Keluargamu seperti <b>Filipina</b> — negara dengan PDB per kapita $3.950/tahun yang sedang dalam <b>momentum pertumbuhan meyakinkan di atas 5%</b>. Surplus mulai terbentuk dan kelas menengah tumbuh, tapi tabungan nasional masih rendah dan banyak bergantung pada satu sumber pendapatan. Persis seperti kondisimu: <b>keuangan mulai membaik dan surplus sudah ada, tapi belum konsisten dan investasi baru sekadar dimulai.</b>`;
+            tags = ["Surplus mulai terbentuk", "Keuangan sedang dalam perbaikan", "Investasi baru dimulai", "Pertumbuhan nyata sedang terjadi"];
+            motivasi = `"Filipina tumbuh di atas 5% secara konsisten. Kuncinya: jangan hanya bergantung satu sumber pendapatan. Diversifikasi penghasilan dan mulai investasi rutin sekarang."`;
+
+        } else if (skor <= 38) {
+            negara = "Vietnam"; bendera = "🇻🇳";
+            pertumbuhan = "+7,1%"; gdpPerKapita = "$4.163/tahun";
+            negaraRank = "PDB per kapita ke-116 dunia (2024)";
+            kelasCard = "nc-kuning"; kelasTag = "kuning"; kelasMotivasi = "mv-kuning";
+            deskripsi = `Keuanganmu sudah di level <b>Vietnam</b> — negara dengan PDB per kapita $4.163/tahun dan pertumbuhan <b>7,1% tertinggi di Asia Tenggara</b>. Vietnam dulu porak-poranda setelah perang, tapi dalam 30 tahun jadi kisah sukses dengan tingkat tabungan hampir 30% dari pendapatan. Persis seperti kondisimu: <b>surplus sudah konsisten, cadangan mulai solid, dan investasimu mulai beragam.</b>`;
+            tags = ["Surplus konsisten mulai terbentuk", "Cadangan darurat mulai solid", "Investasi mulai beragam", "Transformasi keuangan nyata sedang terjadi"];
+            motivasi = `"Vietnam membuktikan: dari nol bisa jadi kekuatan ekonomi dalam satu generasi — dengan menabung lebih dari yang dibelanjakan setiap bulan tanpa kecuali."`;
+
+        } else if (skor <= 45) {
+            negara = "Indonesia"; bendera = "🇮🇩";
+            pertumbuhan = "+5,0%"; gdpPerKapita = "$4.975/tahun";
+            negaraRank = "PDB per kapita ke-111 dunia (2024)";
+            kelasCard = "nc-kuning"; kelasTag = "kuning"; kelasMotivasi = "mv-kuning";
+            deskripsi = `Keuanganmu sudah di level <b>Indonesia</b> — ekonomi terbesar ASEAN dengan PDB per kapita $4.975/tahun yang tumbuh stabil 5% per tahun. Indonesia punya cadangan devisa yang lumayan dan aktivitas ekonomi yang terus bergerak. Tantangannya: konsumsi domestik masih sangat tinggi (56% dari PDB). Persis seperti kondisimu: <b>keuangan sudah jauh lebih baik, surplus ada dan stabil, tapi masih ada ruang besar untuk mengoptimalkan tabungan dan investasi.</b>`;
+            tags = ["Surplus stabil dan konsisten", "Cadangan devisa lumayan kuat", "Pertumbuhan ekonomi solid 5%/tahun", "Investasi perlu lebih dioptimalkan"];
+            motivasi = `"Indonesia bangkit dari krisis 1998 dan jadi ekonomi terbesar ASEAN — dengan disiplin membangun cadangan dan menata investasi satu per satu. Kamu sudah di jalur yang sama."`;
+
+        } else if (skor <= 52) {
+            negara = "Venezuela"; bendera = "🇻🇪";
+            pertumbuhan = "-2,9%"; gdpPerKapita = "$7.450/tahun";
+            negaraRank = "PDB per kapita ke-85 dunia (2024)";
+            kelasCard = "nc-kuning"; kelasTag = "kuning"; kelasMotivasi = "mv-kuning";
+            deskripsi = `Keuanganmu sudah di level PDB per kapita <b>Venezuela</b> — $7.450/tahun. Menariknya, meski ekonomi Venezuela kontraksi (-2,9%), <b>PDB per kapitanya masih cukup tinggi karena penduduknya relatif sedikit</b>. Ini cerminan kondisimu: <b>kamu sudah punya aset dan pendapatan yang lumayan, tapi masih ada risiko jika tidak dikelola dengan disiplin</b> — seperti Venezuela yang punya kekayaan besar tapi terancam karena pengelolaan yang kurang optimal.`;
+            tags = ["Pendapatan per kapita sudah lumayan", "Aset mulai terbentuk", "Perlu disiplin pengelolaan lebih ketat", "Jangan lengah meski kondisi membaik"];
+            motivasi = `"Venezuela punya PDB per kapita yang lumayan tapi ekonominya kontraksi — karena tidak dikelola dengan disiplin. Kamu sudah di posisi yang lebih baik. Jaga dan optimalkan yang sudah ada."`;
+
+        } else if (skor <= 59) {
+            negara = "Thailand"; bendera = "🇹🇭";
+            pertumbuhan = "+2,7%"; gdpPerKapita = "$7.827/tahun";
+            negaraRank = "PDB per kapita ke-82 dunia (2024)";
+            kelasCard = "nc-kuning"; kelasTag = "kuning"; kelasMotivasi = "mv-kuning";
+            deskripsi = `Keuanganmu sudah di level <b>Thailand</b> — PDB per kapita $7.827/tahun dengan <b>fondasi ekonomi yang solid dan ketahanan luar biasa</b>. Thailand punya cadangan devisa kuat dan rasio utang terkontrol. Bahkan saat krisis 1997 yang menghancurkan banyak negara Asia, Thailand bangkit paling cepat. Persis seperti kondisimu: <b>dana darurat sudah kuat, surplus signifikan setiap bulan, dan utang sudah terkontrol dengan baik.</b>`;
+            tags = ["Dana darurat sudah kuat dan terjaga", "Surplus signifikan setiap bulan", "Utang terkontrol dengan baik", "Fondasi keuangan solid dan tahan guncangan"];
+            motivasi = `"Thailand bangkit dari krisis 1997 lebih cepat dari semua negara Asia karena fondasinya solid. Kamu sudah punya fondasi itu — sekarang fokus percepat pertumbuhan kekayaan."`;
+
+        } else if (skor <= 65) {
+            negara = "Brasil"; bendera = "🇧🇷";
+            pertumbuhan = "+3,4%"; gdpPerKapita = "$10.400/tahun";
+            negaraRank = "PDB per kapita ke-71 dunia (2024)";
+            kelasCard = "nc-hijau"; kelasTag = "hijau"; kelasMotivasi = "mv-hijau";
+            deskripsi = `Keuanganmu sudah di level <b>Brasil</b> — PDB per kapita $10.400/tahun, ekonomi terbesar ke-10 dunia. Brasil punya <b>sumber daya alam luar biasa dan pertumbuhan ekonomi yang solid</b>. Kekayaan bersihmu sudah positif dan tumbuh, investasi sudah berjalan, dan arus kas terjaga baik. Persis seperti kondisimu: <b>fondasi keuangan sudah kuat, surplus konsisten, dan kekayaanmu sedang dalam fase akumulasi yang nyata.</b>`;
+            tags = ["Kekayaan bersih positif dan tumbuh", "Surplus konsisten setiap bulan", "Investasi sudah berjalan dengan baik", "Fondasi keuangan sudah solid"];
+            motivasi = `"Brasil adalah ekonomi ke-10 dunia dengan segala potensinya. Kamu sudah membangun fondasi sekuat itu — sekarang fokus pada diversifikasi dan pertumbuhan jangka panjang."`;
+
+        } else if (skor <= 71) {
+            negara = "Malaysia"; bendera = "🇲🇾";
+            pertumbuhan = "+5,1%"; gdpPerKapita = "$12.700/tahun";
+            negaraRank = "PDB per kapita ke-67 dunia (2024)";
+            kelasCard = "nc-hijau"; kelasTag = "hijau"; kelasMotivasi = "mv-hijau";
+            deskripsi = `Keuanganmu sudah di level <b>Malaysia</b> — PDB per kapita $12.700/tahun, negara yang <b>berhasil naik kelas dari berkembang ke berpendapatan menengah atas</b> dalam satu generasi. Malaysia punya sistem tabungan EPF yang menghasilkan 6–7% per tahun dan investasi terdiversifikasi. Persis seperti kondisimu: <b>kekayaan bersih positif dan tumbuh, investasimu sudah beragam, dan surplus rutin diarahkan ke tempat yang tepat.</b>`;
+            tags = ["Kekayaan bersih positif dan terus tumbuh", "Investasi sudah terdiversifikasi", "Sistem keuangan sudah terstruktur baik", "Naik kelas sedang terjadi"];
+            motivasi = `"Malaysia naik kelas dalam satu generasi dengan resep sederhana: tabungan wajib + investasi aktif + utang hanya untuk aset produktif. Kamu sudah menjalankan resep itu."`;
+
+        } else if (skor <= 76) {
             negara = "China"; bendera = "🇨🇳";
-            pertumbuhan = "+4,8%"; negaraRank = "Ekonomi ke-2 dunia (2024)";
-            kelasCard = "nc-kuning"; kelasTag = "kuning"; kelasMotivasi = "mv-kuning";
-            deskripsi = `Keuanganmu sudah di level <b>China</b> — dan analoginya sangat tepat. China terkenal dengan <b>tingkat tabungan nasional tertinggi di dunia: hampir 45% dari pendapatan langsung disimpan atau diinvestasikan</b>, bukan dihabiskan. Mereka juga disiplin membangun cadangan dan berinvestasi di aset produktif. Persis seperti kamu — <b>surplus dan cadanganmu sudah solid, investasi berjalan, tapi saatnya bergerak dari sekadar "menyimpan" ke "mengembangkan" secara lebih aktif dan terdiversifikasi</b>.`;
-            tags = ["Tabungan & cadangan sudah solid", "Surplus konsisten setiap bulan", "Investasi aktif tapi bisa lebih luas", "Saatnya dari defensif ke ekspansif"];
-            motivasi = `"China mengangkat 800 juta orang dari kemiskinan dalam 40 tahun dengan satu senjata: disiplin menabung + investasi masif di aset produktif. Kamu sudah punya disiplin itu — sekarang jadikan investasimu lebih beragam."`;
-
-        } else if (skor <= 80) {
-            negara = "Amerika Serikat"; bendera = "🇺🇸";
-            pertumbuhan = "+2,8%"; negaraRank = "Ekonomi ke-1 dunia (2024)";
+            pertumbuhan = "+5,0%"; gdpPerKapita = "$13.400/tahun";
+            negaraRank = "PDB per kapita ke-64 dunia (2024)";
             kelasCard = "nc-hijau"; kelasTag = "hijau"; kelasMotivasi = "mv-hijau";
-            deskripsi = `Keuanganmu sudah di level <b>Amerika Serikat</b> — dan ini analogi yang sangat pas. AS adalah ekonomi terbesar dunia, tapi juga punya <b>utang nasional $33 triliun</b>. Paradoksnya: mereka tetap makmur karena <b>aset dan arus kasnya jauh melampaui utang</b>. Persis seperti kondisimu — <b>mungkin masih ada sisa utang, tapi kekayaan bersihmu positif, surplus konsisten, dan investasimu sudah berjalan</b>. AS tidak takut berutang karena mereka tahu cara menghasilkan jauh lebih besar dari yang dipinjam.`;
-            tags = ["Kekayaan bersih positif & terus tumbuh", "Surplus konsisten & kuat setiap bulan", "Utang ada tapi terkontrol & produktif", "Investasi terdiversifikasi dengan baik"];
-            motivasi = `"AS punya utang terbesar di dunia tapi tetap jadi ekonomi nomor 1 — karena aset dan arus kasnya jauh melampaui utang. Kamu sudah di posisi serupa. Sekarang: buat setiap rupiahmu bekerja lebih keras."`;
+            deskripsi = `Keuanganmu sudah di level <b>China</b> — PDB per kapita $13.400/tahun, ekonomi ke-2 terbesar dunia. China terkenal dengan <b>tingkat tabungan nasional tertinggi di dunia: hampir 45% dari pendapatan langsung disimpan atau diinvestasikan</b>. Dalam 40 tahun mengangkat 800 juta orang dari kemiskinan. Persis seperti kondisimu: <b>surplus sangat besar dan konsisten, investasi aktif di berbagai instrumen, dan kekayaan bersih tumbuh signifikan.</b>`;
+            tags = ["Surplus sangat besar dan konsisten", "Tabungan 45% dari pendapatan", "Investasi masif di berbagai instrumen", "Kekayaan bersih tumbuh signifikan setiap tahun"];
+            motivasi = `"China mengangkat 800 juta orang dari kemiskinan dalam 40 tahun dengan satu senjata: disiplin menabung 45% + investasi masif. Kamu sudah ada di level itu."`;
 
-        } else if (skor <= 92) {
+        } else if (skor <= 81) {
+            negara = "Rusia"; bendera = "🇷🇺";
+            pertumbuhan = "+3,6%"; gdpPerKapita = "$14.700/tahun";
+            negaraRank = "PDB per kapita ke-57 dunia (2024)";
+            kelasCard = "nc-hijau"; kelasTag = "hijau"; kelasMotivasi = "mv-hijau";
+            deskripsi = `Keuanganmu sudah di level <b>Rusia</b> — PDB per kapita $14.700/tahun dengan <b>cadangan emas & devisa terbesar ke-4 di dunia ($593 miliar)</b>. Rusia punya sumber daya alam melimpah: minyak, gas, emas, berlian, dan tanah terluas di dunia. Kekayaan bersihmu sudah signifikan dan cadangan kuat. Persis seperti kondisimu: <b>fondasi keuangan sangat solid, kekayaan bersih besar, dan investasimu aktif di berbagai instrumen.</b>`;
+            tags = ["Cadangan keuangan sangat kuat", "Kekayaan bersih signifikan dan tumbuh", "Investasi aktif di berbagai instrumen", "Fondasi sangat solid dan tahan guncangan"];
+            motivasi = `"Rusia punya cadangan emas dan devisa terbesar ke-4 di dunia — fondasi yang tidak mudah goyah. Kamu sudah membangun cadangan sekuat itu. Sekarang optimalkan agar asetmu lebih produktif."`;
+
+        } else if (skor <= 86) {
+            negara = "Arab Saudi"; bendera = "🇸🇦";
+            pertumbuhan = "+1,3%"; gdpPerKapita = "$31.100/tahun";
+            negaraRank = "PDB per kapita ke-36 dunia (2024)";
+            kelasCard = "nc-hijau"; kelasTag = "hijau"; kelasMotivasi = "mv-hijau";
+            deskripsi = `Keuanganmu sudah di level <b>Arab Saudi</b> — PDB per kapita $31.100/tahun dengan <b>cadangan devisa sangat besar dan investasi global lewat Public Investment Fund (PIF) senilai $700 miliar</b>. Saudi sudah antisipasi masa depan lewat Vision 2030: diversifikasi besar-besaran ke properti, teknologi, dan pariwisata. Persis seperti kondisimu: <b>cadangan darurat sangat kuat, surplus besar konsisten, dan kamu sudah berpikir dan berinvestasi untuk jangka panjang.</b>`;
+            tags = ["Cadangan darurat sangat besar dan kuat", "Surplus konsisten setiap bulan", "Investasi aktif jangka panjang", "Visi keuangan jangka panjang sudah terbentuk"];
+            motivasi = `"Arab Saudi tidak menunggu minyaknya habis untuk berubah — mereka mulai diversifikasi sekarang. Kamu juga: jangan andalkan satu sumber. Perluas dan diversifikasi investasimu."`;
+
+        } else if (skor <= 90) {
+            negara = "Korea Selatan"; bendera = "🇰🇷";
+            pertumbuhan = "+2,1%"; gdpPerKapita = "$33.700/tahun";
+            negaraRank = "PDB per kapita ke-32 dunia (2024)";
+            kelasCard = "nc-hijau"; kelasTag = "hijau"; kelasMotivasi = "mv-hijau";
+            deskripsi = `Posisimu sudah di level <b>Korea Selatan</b> — PDB per kapita $33.700/tahun, negara yang dalam 60 tahun melompat dari <b>salah satu negara termiskin di dunia menjadi ekonomi maju</b>. Korea dikenal dengan budaya menabung ekstrem (rata-rata 35% pendapatan) dan disiplin investasi yang sangat ketat. Semua dibangun dari nol dengan <b>kerja keras + tabungan konsisten + investasi cerdas.</b>`;
+            tags = ["Dana darurat sangat kuat dan terjaga", "Disiplin keuangan level tinggi", "Investasi jangka panjang optimal", "Kekayaan bersih solid dan terus tumbuh"];
+            motivasi = `"Korea Selatan: dari termiskin jadi maju dalam satu generasi — bukan karena beruntung, tapi karena disiplin menabung dan investasi tanpa kompromi. Kamu sudah ada di jalur itu."`;
+
+        } else if (skor <= 93) {
             negara = "Jepang"; bendera = "🇯🇵";
-            pertumbuhan = "+0,9%"; negaraRank = "Ekonomi ke-4 dunia (2024)";
+            pertumbuhan = "-0,1%"; gdpPerKapita = "$33.800/tahun";
+            negaraRank = "PDB per kapita ke-31 dunia (2024)";
             kelasCard = "nc-hijau"; kelasTag = "hijau"; kelasMotivasi = "mv-hijau";
-            deskripsi = `Posisimu sudah di level <b>Jepang</b> — dan ini cerminan yang sangat akurat. Jepang punya filosofi keuangan <i>kakeibo</i>: <b>setiap sen dicatat, setiap pengeluaran direncanakan, dan tabungan adalah prioritas utama — bukan sisa dari pengeluaran</b>. Rata-rata rumah tangga Jepang menyimpan 20–30% pendapatannya secara konsisten. Hasilnya: dana darurat sangat kuat, utang terkontrol, dan kekayaan rumah tangga Jepang adalah <b>salah satu tertinggi di dunia</b>. Kamu sudah menjalani filosofi Jepang itu — disiplin, terencana, tidak tergoda jalan pintas.`;
-            tags = ["Dana darurat sangat kuat & konsisten", "Pengeluaran terencana & terdisiplin", "Kekayaan bersih tumbuh stabil setiap tahun", "Investasi jangka panjang berjalan optimal"];
-            motivasi = `"Jepang tidak kaya karena beruntung — mereka kaya karena tidak pernah berhenti mencatat, merencanakan, dan menabung. Hasilnya: salah satu kekayaan rumah tangga tertinggi di dunia. Kamu sudah punya mentalitas itu."`;
+            deskripsi = `Posisimu sudah di level <b>Jepang</b> — PDB per kapita $33.800/tahun dengan <b>cadangan devisa terbesar ke-2 di dunia ($1,2 triliun)</b>. Jepang terkenal dengan filosofi <i>kakeibo</i>: setiap sen dicatat, tabungan adalah prioritas pertama — bukan sisa. Meski GDP sedikit kontraksi (-0,1% di 2024), <b>kekayaan rumah tangga Jepang tetap salah satu tertinggi di dunia.</b>`;
+            tags = ["Cadangan devisa luar biasa kuat", "Perencanaan keuangan lintas generasi", "Investasi terdiversifikasi sempurna", "Tidak akan goyah oleh krisis apapun"];
+            motivasi = `"Jepang bangkit dari bom atom jadi ekonomi ke-4 dunia — dengan satu prinsip: catat setiap sen, tabung sebelum belanja, investasi untuk 30 tahun ke depan. Kamu sudah melakukan itu."`;
+
+        } else if (skor <= 96) {
+            negara = "Jerman"; bendera = "🇩🇪";
+            pertumbuhan = "-0,2%"; gdpPerKapita = "$54.300/tahun";
+            negaraRank = "PDB per kapita ke-18 dunia (2024)";
+            kelasCard = "nc-hijau"; kelasTag = "hijau"; kelasMotivasi = "mv-hijau";
+            deskripsi = `Posisimu sudah di level <b>Jerman</b> — PDB per kapita $54.300/tahun, mesin ekonomi Eropa dengan <b>disiplin fiskal paling ketat di dunia</b>. Jerman punya aturan konstitusi <i>Schuldenbremse</i> yang melarang pemerintah berhutang berlebihan. Meski GDP sedikit kontraksi di 2024 (-0,2%), <b>kekayaan rumah tangga Jerman tetap tertinggi di Eropa</b>. Persis seperti kondisimu: disiplin fiskal tertinggi, fondasi tak tergoyahkan.`;
+            tags = ["Disiplin fiskal tertinggi di dunia", "Fondasi keuangan sekokoh baja", "Kekayaan bersih tertinggi di kelasnya", "Membangun warisan lintas generasi"];
+            motivasi = `"Jerman tidak kaya karena beruntung — mereka kaya karena konstitusinya melarang boros. Bahkan saat GDP sedikit kontraksi, fondasi rumah tangganya tetap kokoh. Kamu sudah punya fondasi itu."`;
+
+        } else if (skor <= 99) {
+            negara = "Amerika Serikat"; bendera = "🇺🇸";
+            pertumbuhan = "+2,8%"; gdpPerKapita = "$80.000/tahun";
+            negaraRank = "PDB per kapita ke-7 dunia (2024)";
+            kelasCard = "nc-hijau"; kelasTag = "hijau"; kelasMotivasi = "mv-hijau";
+            deskripsi = `Keuanganmu sudah di level <b>Amerika Serikat</b> — PDB per kapita $80.000/tahun, ekonomi terbesar di dunia. AS punya <b>utang nasional $33 triliun tapi tetap jadi ekonomi nomor 1</b> karena aset dan arus kasnya jauh melampaui utang. Sistem investasi paling matang di dunia: saham, properti, obligasi semua terdiversifikasi. Persis seperti kondisimu: <b>kekayaan bersih sangat positif, surplus besar, dan investasimu sudah bekerja untuk kamu secara otomatis.</b>`;
+            tags = ["Kekayaan bersih sangat positif", "Surplus besar dan konsisten", "Investasi bekerja hampir autopilot", "Utang ada tapi jauh di bawah nilai aset"];
+            motivasi = `"AS punya utang terbesar di dunia tapi tetap nomor 1 — karena aset dan arus kasnya jauh melampaui utang. Posisimu persis sama. Sekarang: buat setiap rupiahmu bekerja lebih keras."`;
 
         } else {
             negara = "Singapura"; bendera = "🇸🇬";
-            pertumbuhan = "+3,4%"; negaraRank = "Ekonomi ke-36 dunia | PDB per kapita ke-3 dunia (2024)";
+            pertumbuhan = "+4,4%"; gdpPerKapita = "$88.000/tahun";
+            negaraRank = "PDB per kapita ke-3 dunia (2024)";
             kelasCard = "nc-hijau"; kelasTag = "hijau"; kelasMotivasi = "mv-hijau";
-            deskripsi = `LUAR BIASA! Keuanganmu sudah di level <b>Singapura</b> — dan ini analogi yang paling tepat. Singapura <b>tidak punya minyak, tidak punya tanah luas, tidak punya sumber daya alam apapun</b> — tapi jadi negara dengan PDB per kapita ke-3 di dunia. Rahasianya: <b>sistem tabungan wajib CPF (20–37% gaji langsung masuk investasi otomatis), surplus anggaran konsisten setiap tahun, cadangan devisa yang menggunung, dan investasi via Temasek & GIC yang menghasilkan triliunan dolar</b>. Persis seperti kamu sekarang: <b>surplus besar, utang minimal, cadangan tak tergoyahkan, dan investasimu berjalan hampir autopilot</b>.`;
-            tags = ["Surplus sangat besar & konsisten", "Cadangan darurat tak tergoyahkan", "Utang minimal atau sudah lunas", "Investasi autopilot — membangun warisan keluarga"];
-            motivasi = `"Singapura buktikan: bukan BERAPA yang kamu punya, tapi BAGAIMANA mengelolanya. Tanpa sumber daya alam apapun, mereka jadi terkaya ke-3 di dunia. Kamu sudah membuktikan hal yang sama untuk keluargamu."`;
+            deskripsi = `LUAR BIASA! Keuanganmu sudah di level <b>Singapura</b> — PDB per kapita $88.000/tahun, <b>ke-3 tertinggi di dunia</b>. Singapura tidak punya minyak, tanah luas, atau sumber daya alam apapun. Tapi lewat sistem CPF (20–37% gaji diinvestasikan otomatis), surplus anggaran konsisten, dan cadangan devisa $400 miliar, mereka jadi salah satu negara terkaya per kapita di dunia. Persis seperti kondisimu: <b>surplus sangat besar, utang nol atau minimal, cadangan tak tergoyahkan, investasi autopilot.</b>`;
+            tags = ["PDB per kapita ke-3 tertinggi di dunia", "Surplus sangat besar dan konsisten", "Cadangan tak tergoyahkan oleh apapun", "Investasi autopilot — warisan abadi lintas generasi"];
+            motivasi = `"Singapura buktikan: bukan BERAPA yang kamu punya, tapi BAGAIMANA mengelolanya. Tanpa sumber daya alam apapun, mereka jadi terkaya ke-3 di dunia per kapita. Kamu sudah membuktikan hal yang sama."`;
         }
 
         // Progress bar (5 level)
-        let levelAktif = skor <= 30 ? 1 : skor <= 50 ? 2 : skor <= 68 ? 3 : skor <= 84 ? 4 : 5;
-        let levelWarna = skor <= 45 ? 'merah' : skor <= 68 ? 'kuning' : 'hijau';
+        let levelAktif = skor <= 17 ? 1 : skor <= 45 ? 2 : skor <= 65 ? 3 : skor <= 93 ? 4 : 5;
+        let levelWarna = skor <= 45 ? 'merah' : skor <= 65 ? 'kuning' : 'hijau';
         let progressSteps = '';
-        let levelNama = ['🇻🇪 Kritis', '🇮🇩 Berkembang', '🇨🇳 Menengah', '🇺🇸 Maju', '🇸🇬 Elite'];
+        let levelNama = ['🇿🇼 Kritis', '🇮🇩 Berkembang', '🇧🇷 Menengah', '🇯🇵 Maju', '🇸🇬 Elite'];
         for (let i = 1; i <= 5; i++) {
             let cls = i <= levelAktif ? `aktif-${levelWarna}` : '';
             progressSteps += `<div class="progress-step ${cls}"></div>`;
@@ -560,6 +667,7 @@
                     <div class="negara-label">🌍 Analogi Posisi Ekonomi Keluarga Kamu</div>
                     <div class="negara-nama">${negara}</div>
                     <div style="font-size:12px; color:#888; margin-top:2px;">${negaraRank}</div>
+                    <div style="font-size:12px; color:#27ae60; font-weight:bold; margin-top:1px;">PDB/kapita: ${gdpPerKapita}</div>
                 </div>
                 <div style="margin-left:auto; text-align:center;">
                     <div style="background:#ecf0f1; border-radius:10px; padding:8px 14px; margin-bottom:6px;">
@@ -568,9 +676,8 @@
                         <div style="font-size:10px; color:#aaa;">dari 100</div>
                     </div>
                     <div style="background:${pertumbuhan.startsWith('-') ? '#fadbd8' : '#d5f5e3'}; border-radius:8px; padding:5px 10px;">
-                        <div style="font-size:10px; color:#888; text-transform:uppercase; letter-spacing:1px;">Pertumbuhan</div>
+                        <div style="font-size:10px; color:#888; text-transform:uppercase; letter-spacing:1px;">GDP/tahun</div>
                         <div style="font-size:16px; font-weight:bold; color:${pertumbuhan.startsWith('-') ? '#c0392b' : '#1e8449'};">${pertumbuhan}</div>
-                        <div style="font-size:10px; color:#aaa;">GDP/tahun</div>
                     </div>
                 </div>
             </div>
