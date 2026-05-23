@@ -26,6 +26,46 @@
         #saveNotification { position: fixed; top: 20px; right: 20px; background: #27ae60; color: white; padding: 10px 20px; border-radius: 5px; font-size: 14px; opacity: 0; transition: opacity 0.5s; pointer-events: none; z-index: 1000; }
         @media (max-width: 768px) { .grid-layout { grid-template-columns: 1fr; } }
 
+        /* === KETERANGAN INPUT === */
+        .input-hint {
+            font-size: 12px;
+            color: #888;
+            margin-top: 4px;
+            margin-bottom: 0;
+            line-height: 1.5;
+        }
+        .input-hint .hint-tag {
+            display: inline-block;
+            background: #eaf4fb;
+            color: #2980b9;
+            border-radius: 4px;
+            padding: 1px 6px;
+            font-size: 11px;
+            margin: 2px 2px 2px 0;
+        }
+        .hint-toggle {
+            display: inline-block;
+            margin-left: 6px;
+            font-size: 12px;
+            color: #3498db;
+            cursor: pointer;
+            font-weight: normal;
+            user-select: none;
+        }
+        .hint-toggle:hover { text-decoration: underline; }
+        .hint-box {
+            display: none;
+            margin-top: 6px;
+            background: #f0f8ff;
+            border: 1px solid #d0e8f8;
+            border-radius: 6px;
+            padding: 8px 10px;
+            font-size: 12.5px;
+            color: #444;
+            line-height: 1.6;
+        }
+        .hint-box.aktif { display: block; }
+
         /* === REKOMENDASI STYLES === */
         .rekomendasi-wrapper { margin-top: 10px; }
 
@@ -47,6 +87,96 @@
         .status-survival { background: linear-gradient(135deg, #c0392b, #e74c3c); }
         .status-stabilisasi { background: linear-gradient(135deg, #d35400, #e67e22); }
         .status-ekspansi { background: linear-gradient(135deg, #1e8449, #27ae60); }
+
+        /* === KARTU ANALOGI NEGARA === */
+        .negara-card {
+            border-radius: 12px;
+            padding: 18px 20px;
+            margin-bottom: 20px;
+            border: 2px solid #e0e0e0;
+            background: #fafafa;
+            position: relative;
+            overflow: hidden;
+        }
+        .negara-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 6px; height: 100%;
+        }
+        .negara-card.nc-merah { border-color: #fadbd8; background: #fff8f7; }
+        .negara-card.nc-merah::before { background: #e74c3c; }
+        .negara-card.nc-kuning { border-color: #fdebd0; background: #fffaf4; }
+        .negara-card.nc-kuning::before { background: #e67e22; }
+        .negara-card.nc-hijau { border-color: #d5f5e3; background: #f4fdf7; }
+        .negara-card.nc-hijau::before { background: #27ae60; }
+
+        .negara-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        .negara-bendera { font-size: 36px; }
+        .negara-nama { font-size: 20px; font-weight: bold; color: #2c3e50; }
+        .negara-label { font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 1px; }
+        .negara-deskripsi { font-size: 13.5px; color: #444; line-height: 1.7; margin-bottom: 10px; }
+        .negara-mirip {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 10px;
+        }
+        .negara-tag {
+            background: #ecf0f1;
+            color: #555;
+            font-size: 12px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        .negara-tag.merah { background: #fadbd8; color: #c0392b; }
+        .negara-tag.kuning { background: #fdebd0; color: #b7500a; }
+        .negara-tag.hijau { background: #d5f5e3; color: #1e8449; }
+        .negara-motivasi {
+            margin-top: 12px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-style: italic;
+            line-height: 1.6;
+        }
+        .negara-motivasi.mv-merah { background: #fadbd8; color: #922b21; border-left: 3px solid #e74c3c; }
+        .negara-motivasi.mv-kuning { background: #fdebd0; color: #784212; border-left: 3px solid #e67e22; }
+        .negara-motivasi.mv-hijau { background: #d5f5e3; color: #1a5276; border-left: 3px solid #27ae60; }
+        .negara-progress {
+            margin-top: 14px;
+        }
+        .negara-progress-label { font-size: 12px; color: #888; margin-bottom: 5px; }
+        .progress-track {
+            display: flex;
+            height: 8px;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #ecf0f1;
+        }
+        .progress-step {
+            flex: 1;
+            height: 100%;
+            margin-right: 2px;
+            border-radius: 3px;
+            background: #ddd;
+        }
+        .progress-step.aktif-merah { background: #e74c3c; }
+        .progress-step.aktif-kuning { background: #e67e22; }
+        .progress-step.aktif-hijau { background: #27ae60; }
+        .progress-step-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            color: #aaa;
+            margin-top: 4px;
+        }
 
         .rekomendasi-list { display: flex; flex-direction: column; gap: 12px; }
 
@@ -125,10 +255,75 @@
     <div class="section-title">BAB I: Arus Kas Bulanan (Anggaran Penerimaan Bulanan Keluarga)</div>
     <div class="grid-layout">
         <div class="input-section">
-            <div class="form-group"><label>1. Total Pendapatan / Ekspor (X)</label><input type="text" inputmode="numeric" id="inputX" oninput="formatKetik(this); hitungSemua()"></div>
-            <div class="form-group"><label>2. Konsumsi Domestik (C)</label><input type="text" inputmode="numeric" id="inputC" oninput="formatKetik(this); hitungSemua()"></div>
-            <div class="form-group"><label>3. Alokasi Investasi (I)</label><input type="text" inputmode="numeric" id="inputI" oninput="formatKetik(this); hitungSemua()"></div>
-            <div class="form-group"><label>4. Impor / Cicilan Utang (M)</label><input type="text" inputmode="numeric" id="inputM" oninput="formatKetik(this); hitungSemua()"></div>
+            <div class="form-group">
+                <label>1. Total Pendapatan / Ekspor (X)</label>
+                <input type="text" inputmode="numeric" id="inputX" oninput="formatKetik(this); hitungSemua()">
+                <div class="input-hint">
+                    <span class="hint-tag">Gaji/upah</span><span class="hint-tag">Bisnis/usaha</span><span class="hint-tag">Freelance</span><span class="hint-tag">Sewa aset</span><span class="hint-tag">Bonus</span>
+                </div>
+                <div class="hint-box" id="hintX">
+                    <b>Masukkan TOTAL semua uang yang masuk ke keluarga per bulan:</b><br>
+                    • Gaji pokok + tunjangan suami/istri<br>
+                    • Pendapatan usaha / warung / toko<br>
+                    • Pendapatan freelance atau kerja sampingan<br>
+                    • Hasil sewa rumah, kos, atau kendaraan<br>
+                    • Bonus, THR (dibagi 12 jika tahunan)<br>
+                    • Dividen atau bunga tabungan/deposito<br>
+                    <i style="color:#e74c3c">⚠️ Jangan masukkan utang/pinjaman sebagai pendapatan</i>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>2. Konsumsi Domestik (C)</label>
+                <input type="text" inputmode="numeric" id="inputC" oninput="formatKetik(this); hitungSemua()">
+                <div class="input-hint">
+                    <span class="hint-tag">Makan/minum</span><span class="hint-tag">Listrik/air</span><span class="hint-tag">Bensin</span><span class="hint-tag">Pendidikan</span><span class="hint-tag">Kesehatan</span>
+                </div>
+                <div class="hint-box" id="hintC">
+                    <b>Semua pengeluaran rutin kebutuhan hidup per bulan:</b><br>
+                    • Belanja makan, minum, dapur sehari-hari<br>
+                    • Tagihan listrik, air, internet, pulsa<br>
+                    • Bensin / transportasi harian<br>
+                    • Biaya sekolah anak (SPP, les, dll)<br>
+                    • Biaya kesehatan, obat-obatan rutin<br>
+                    • Belanja kebutuhan rumah tangga<br>
+                    • Pakaian, hiburan, makan di luar<br>
+                    <i style="color:#888">💡 Tidak termasuk cicilan utang (ada di kolom M)</i>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>3. Alokasi Investasi (I)</label>
+                <input type="text" inputmode="numeric" id="inputI" oninput="formatKetik(this); hitungSemua()">
+                <div class="input-hint">
+                    <span class="hint-tag">Reksa dana</span><span class="hint-tag">Tabungan rutin</span><span class="hint-tag">Emas</span><span class="hint-tag">Saham</span><span class="hint-tag">Dana pensiun</span>
+                </div>
+                <div class="hint-box" id="hintI">
+                    <b>Uang yang sengaja disisihkan untuk tumbuh / masa depan per bulan:</b><br>
+                    • Setoran rutin reksa dana / saham<br>
+                    • Tabungan berjangka / deposito<br>
+                    • Beli emas batangan secara rutin<br>
+                    • Iuran BPJS Ketenagakerjaan (JHT/JP)<br>
+                    • Dana pensiun mandiri<br>
+                    • Modal tambahan untuk usaha<br>
+                    <i style="color:#888">💡 Isi 0 jika belum ada. Target ideal: 10–20% dari pendapatan</i>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>4. Impor / Cicilan Utang (M)</label>
+                <input type="text" inputmode="numeric" id="inputM" oninput="formatKetik(this); hitungSemua()">
+                <div class="input-hint">
+                    <span class="hint-tag">KPR</span><span class="hint-tag">Cicilan motor/mobil</span><span class="hint-tag">Pinjol</span><span class="hint-tag">Kartu kredit</span><span class="hint-tag">Hutang ke orang</span>
+                </div>
+                <div class="hint-box" id="hintM">
+                    <b>Total semua cicilan/angsuran yang dibayar per bulan:</b><br>
+                    • Cicilan KPR (kredit rumah)<br>
+                    • Angsuran motor atau mobil<br>
+                    • Cicilan pinjaman online (pinjol)<br>
+                    • Tagihan kartu kredit (bayar minimum)<br>
+                    • Cicilan ke bank / koperasi<br>
+                    • Utang ke keluarga / teman (jika rutin)<br>
+                    <i style="color:#e74c3c">⚠️ Rasio sehat: max 30% dari pendapatan (X)</i>
+                </div>
+            </div>
         </div>
         <div class="output-section">
             <div class="card" style="border-left: 5px solid #2980b9;"><div class="card-title">Neraca Perdagangan</div><div class="card-value" id="outNeraca">Rp 0</div><span id="badgeNeraca" class="status-badge bg-green">SURPLUS</span></div>
@@ -139,11 +334,83 @@
     <div class="section-title">BAB II: Neraca Kekayaan</div>
     <div class="grid-layout">
         <div class="input-section">
-            <div class="form-group"><label>1. Kas Keluarga</label><input type="text" inputmode="numeric" id="inputTabungan" oninput="formatKetik(this); hitungSemua()"></div>
-            <div class="form-group"><label>2. Cadangan Devisa (Emas)</label><input type="text" inputmode="numeric" id="inputEmas" oninput="formatKetik(this); hitungSemua()"></div>
-            <div class="form-group"><label>3. Dana Abadi</label><input type="text" inputmode="numeric" id="inputPensiun" oninput="formatKetik(this); hitungSemua()"></div>
-            <div class="form-group"><label>4. Infrastruktur & Aset Fisik</label><input type="text" inputmode="numeric" id="inputMotor" oninput="formatKetik(this); hitungSemua()"></div>
-            <div class="form-group"><label>5. Total Sisa Utang</label><input type="text" inputmode="numeric" id="inputSisaUtang" oninput="formatKetik(this); hitungSemua()"></div>
+            <div class="form-group">
+                <label>1. Kas Keluarga</label>
+                <input type="text" inputmode="numeric" id="inputTabungan" oninput="formatKetik(this); hitungSemua()">
+                <div class="input-hint">
+                    <span class="hint-tag">Saldo rekening</span><span class="hint-tag">Uang tunai</span><span class="hint-tag">Tabungan bank</span>
+                </div>
+                <div class="hint-box" id="hintTabungan">
+                    <b>Total uang tunai & saldo yang bisa diakses kapan saja:</b><br>
+                    • Saldo di semua rekening tabungan (BCA, BRI, dll)<br>
+                    • Uang tunai di dompet / brankas rumah<br>
+                    • Saldo dompet digital (GoPay, OVO, Dana)<br>
+                    <i style="color:#888">💡 Ini adalah "uang segar" yang paling likuid — bisa langsung dipakai darurat</i>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>2. Cadangan Devisa (Emas)</label>
+                <input type="text" inputmode="numeric" id="inputEmas" oninput="formatKetik(this); hitungSemua()">
+                <div class="input-hint">
+                    <span class="hint-tag">Emas fisik</span><span class="hint-tag">Tabungan emas</span><span class="hint-tag">Logam mulia</span>
+                </div>
+                <div class="hint-box" id="hintEmas">
+                    <b>Total nilai emas yang dimiliki (dalam Rupiah saat ini):</b><br>
+                    • Emas batangan / logam mulia Antam<br>
+                    • Perhiasan emas (nilai taksiran jual)<br>
+                    • Tabungan emas di Pegadaian / Tokopedia<br>
+                    <i style="color:#888">💡 Hitung berdasarkan harga jual emas saat ini, bukan harga beli</i>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>3. Dana Abadi</label>
+                <input type="text" inputmode="numeric" id="inputPensiun" oninput="formatKetik(this); hitungSemua()">
+                <div class="input-hint">
+                    <span class="hint-tag">Reksa dana</span><span class="hint-tag">Saham</span><span class="hint-tag">Deposito</span><span class="hint-tag">JHT/BPJS TK</span>
+                </div>
+                <div class="hint-box" id="hintPensiun">
+                    <b>Aset investasi jangka panjang yang tidak untuk kebutuhan darurat:</b><br>
+                    • Saldo reksa dana (semua jenis)<br>
+                    • Nilai portofolio saham<br>
+                    • Deposito berjangka<br>
+                    • Saldo JHT (BPJS Ketenagakerjaan)<br>
+                    • Dana pensiun / DPLK<br>
+                    • Obligasi / sukuk yang dimiliki<br>
+                    <i style="color:#888">💡 Ini tidak bisa langsung dicairkan dengan mudah, tapi nilainya tumbuh</i>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>4. Infrastruktur & Aset Fisik</label>
+                <input type="text" inputmode="numeric" id="inputMotor" oninput="formatKetik(this); hitungSemua()">
+                <div class="input-hint">
+                    <span class="hint-tag">Rumah</span><span class="hint-tag">Kendaraan</span><span class="hint-tag">Tanah</span><span class="hint-tag">Peralatan usaha</span>
+                </div>
+                <div class="hint-box" id="hintMotor">
+                    <b>Nilai aset fisik yang dimiliki (perkiraan harga jual saat ini):</b><br>
+                    • Rumah / properti (harga pasaran sekarang)<br>
+                    • Motor / mobil (harga jual bekas sekarang)<br>
+                    • Tanah / kavling<br>
+                    • Peralatan usaha / mesin<br>
+                    • Elektronik bernilai tinggi (laptop, TV, dll)<br>
+                    <i style="color:#888">💡 Gunakan harga jual realistis, bukan harga beli dulu</i>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>5. Total Sisa Utang</label>
+                <input type="text" inputmode="numeric" id="inputSisaUtang" oninput="formatKetik(this); hitungSemua()">
+                <div class="input-hint">
+                    <span class="hint-tag">Sisa KPR</span><span class="hint-tag">Sisa kredit kendaraan</span><span class="hint-tag">Pinjaman bank</span><span class="hint-tag">Utang lainnya</span>
+                </div>
+                <div class="hint-box" id="hintSisaUtang">
+                    <b>Total sisa pokok utang yang masih harus dilunasi (bukan cicilan bulanan):</b><br>
+                    • Sisa KPR yang belum lunas<br>
+                    • Sisa kredit motor / mobil<br>
+                    • Sisa pinjaman bank / KTA<br>
+                    • Sisa pinjaman online yang aktif<br>
+                    • Utang ke keluarga / teman<br>
+                    <i style="color:#e74c3c">⚠️ Ini berbeda dengan kolom M (cicilan per bulan). Ini adalah TOTAL sisa yang harus dibayar sampai lunas</i>
+                </div>
+            </div>
         </div>
         <div class="output-section">
             <div class="card" style="border-left: 5px solid #f1c40f;"><div class="card-title">Cadangan Devisa Likuid</div><div class="card-value" id="outLikuid">Rp 0</div></div>
@@ -160,6 +427,11 @@
 
 <script>
     const inputIds = ['inputX', 'inputC', 'inputI', 'inputM', 'inputTabungan', 'inputEmas', 'inputPensiun', 'inputMotor', 'inputSisaUtang'];
+
+    function toggleHint(id) {
+        const box = document.getElementById(id);
+        box.classList.toggle('aktif');
+    }
 
     function formatKetik(input) {
         let angkaSaja = input.value.replace(/[^,\d]/g, '').toString();
@@ -183,6 +455,134 @@
             formatKetik(document.getElementById(id));
         });
         hitungSemua(false);
+    }
+
+    function generateKartuNegara(X, C, I, M, neraca, rasioUtang, dayaTahan, netWorth, sisaUtang, tabungan, emas, pensiun, motor) {
+        // Hitung skor ekonomi (0–100)
+        let skorDarurat  = Math.min(dayaTahan / 6, 1) * 30;       // max 30 poin
+        let skorSurplus  = neraca >= 0 ? Math.min(neraca / (X * 0.3), 1) * 25 : 0; // max 25 poin
+        let skorUtang    = Math.max(0, 1 - rasioUtang / 60) * 25;  // max 25 poin
+        let skorNetWorth = netWorth > 0 ? Math.min(netWorth / (X * 12), 1) * 20 : 0; // max 20 poin
+        let skor = Math.round(skorDarurat + skorSurplus + skorUtang + skorNetWorth);
+
+        // Tentukan negara berdasarkan skor + kondisi khusus
+        let negara, bendera, kelasCard, kelasTag, kelasMotivasi, deskripsi, motivasi, tags;
+        let pertumbuhan, negaraRank;
+
+        // Deteksi kondisi spesifik untuk analogi yang lebih relate
+        let adaUtangBesar   = sisaUtang > X * 6;
+        let asetFisikBesar  = motor > X * 12;
+        let investasiNol    = I === 0;
+        let defisit         = neraca < 0;
+
+        if (skor <= 12 || (defisit && dayaTahan < 1)) {
+            negara = "Venezuela"; bendera = "🇻🇪";
+            pertumbuhan = "-2,9%"; negaraRank = "Ekonomi ke-47 dunia (2024)";
+            kelasCard = "nc-merah"; kelasTag = "merah"; kelasMotivasi = "mv-merah";
+            deskripsi = `Keluargamu saat ini sangat mirip <b>Venezuela</b> — bukan karena tidak punya apa-apa, tapi karena <b>pengeluaran terus melebihi pemasukan sampai cadangan terkuras</b>. Venezuela punya cadangan minyak terbesar di dunia, tapi setiap bulan pemerintahnya "nombok" untuk belanja rutin. Akhirnya? Inflasi meledak dan ekonomi kolaps. Keluargamu sedang mengalami pola yang sama: <b>arus kas minus, cadangan habis, utang terus bertambah</b>. Tapi Venezuela pun bangkit — dan kamu juga bisa.`;
+            tags = ["Pengeluaran > pemasukan tiap bulan", "Cadangan hampir terkuras habis", "Utang terus bertambah", "Butuh 'reformasi darurat' mulai sekarang"];
+            motivasi = `"Venezuela punya minyak terbanyak di dunia tapi tetap kolaps — bukan karena miskin, tapi karena bocor di pengelolaan. Langkah pertama: tutup kebocoran. Pangkas pengeluaran yang tidak perlu mulai bulan ini."`;
+
+        } else if (skor <= 25) {
+            negara = "Rusia"; bendera = "🇷🇺";
+            pertumbuhan = "+3,6%"; negaraRank = "Ekonomi ke-11 dunia (2024)";
+            kelasCard = "nc-merah"; kelasTag = "merah"; kelasMotivasi = "mv-merah";
+            deskripsi = `Keluargamu mirip <b>Rusia</b> — negara yang <b>kaya sumber daya tapi terisolasi dan terkekang dari dalam</b>. Rusia punya gas, minyak, emas, dan aset berlimpah. Tapi cadangan likuidnya tergerus, investasinya terbatas, dan keuangannya terlalu bergantung pada satu sumber. Persis seperti kondisimu: <b>mungkin kamu punya aset fisik atau penghasilan yang lumayan, tapi uang tunai tipis, cicilan menguras setiap bulan, dan keuangan terasa "terkepung"</b>. Sumber daya ada — tinggal soal membebaskan diri dari beban yang mengekang.`;
+            tags = ["Aset ada tapi kurang likuid", "Cadangan tunai sangat tipis", "Terlalu bergantung satu sumber penghasilan", "Perlu bebaskan diri dari cicilan berat"];
+            motivasi = `"Rusia punya semua sumber daya, tapi kekuatannya terbatas karena terkekang. Kamu pun punya potensi besar — mulai bebaskan diri: lunasi cicilan termahal dulu, baru buka peluang baru."`;
+
+        } else if (skor <= 40) {
+            negara = "Indonesia"; bendera = "🇮🇩";
+            pertumbuhan = "+5,0%"; negaraRank = "Ekonomi ke-16 dunia (2024)";
+            kelasCard = "nc-merah"; kelasTag = "merah"; kelasMotivasi = "mv-merah";
+            deskripsi = `Keluargamu sangat mirip <b>Indonesia</b> — dan ini bukan analogi sembarangan. Indonesia adalah negara <b>aktif dan tumbuh, tapi fondasinya belum sekokoh negara maju</b>: konsumsi domestik tinggi, cicilan utang ada, dan tabungan nasional belum optimal. Persis seperti kondisimu: <b>ada pemasukan rutin, ada aktivitas keuangan, tapi cadangan darurat belum cukup dan cicilan masih jadi beban signifikan</b>. Indonesia terus naik kelas dari tahun ke tahun — begitu pula kamu bisa.`;
+            tags = ["Pendapatan ada, konsumsi juga tinggi", "Cadangan darurat belum memadai", "Cicilan utang cukup membebani", "Aktif tapi fondasi perlu diperkuat"];
+            motivasi = `"Indonesia bangkit dari krisis 1998 dan jadi ekonomi terbesar ASEAN bukan karena keberuntungan — tapi karena disiplin membangun cadangan dan menata utang satu per satu. Kamu bisa lakukan hal yang sama."`;
+
+        } else if (skor <= 55) {
+            negara = "India"; bendera = "🇮🇳";
+            pertumbuhan = "+6,5%"; negaraRank = "Ekonomi ke-5 dunia (2024)";
+            kelasCard = "nc-kuning"; kelasTag = "kuning"; kelasMotivasi = "mv-kuning";
+            deskripsi = `Keluargamu seperti <b>India sekarang</b> — sedang dalam <b>momentum tumbuh yang nyata dan menarik perhatian dunia</b>. India dikenal sebagai ekonomi tumbuh tercepat di antara negara-negara besar karena <b>surplus mulai konsisten, investasi mulai aktif, dan kepercayaan dirinya sedang naik</b>. Tapi India juga masih punya gap antara yang sudah baik dan yang belum optimal. Persis seperti kamu — <b>keuanganmu sudah membaik, surplus terbentuk, tapi antara potensi dan realisasi masih ada jarak yang bisa diperpendek</b>.`;
+            tags = ["Surplus mulai konsisten tiap bulan", "Investasi sudah mulai berjalan", "Momentum pertumbuhan nyata ada", "Potensi besar yang belum sepenuhnya dioptimalkan"];
+            motivasi = `"India tidak menunggu semua masalahnya selesai dulu baru maju — mereka bergerak sambil memperbaiki. Itulah kenapa tumbuh 6,5% per tahun. Kamu punya momentum yang sama sekarang."`;
+
+        } else if (skor <= 68) {
+            negara = "China"; bendera = "🇨🇳";
+            pertumbuhan = "+4,8%"; negaraRank = "Ekonomi ke-2 dunia (2024)";
+            kelasCard = "nc-kuning"; kelasTag = "kuning"; kelasMotivasi = "mv-kuning";
+            deskripsi = `Keuanganmu sudah di level <b>China</b> — dan analoginya sangat tepat. China terkenal dengan <b>tingkat tabungan nasional tertinggi di dunia: hampir 45% dari pendapatan langsung disimpan atau diinvestasikan</b>, bukan dihabiskan. Mereka juga disiplin membangun cadangan dan berinvestasi di aset produktif. Persis seperti kamu — <b>surplus dan cadanganmu sudah solid, investasi berjalan, tapi saatnya bergerak dari sekadar "menyimpan" ke "mengembangkan" secara lebih aktif dan terdiversifikasi</b>.`;
+            tags = ["Tabungan & cadangan sudah solid", "Surplus konsisten setiap bulan", "Investasi aktif tapi bisa lebih luas", "Saatnya dari defensif ke ekspansif"];
+            motivasi = `"China mengangkat 800 juta orang dari kemiskinan dalam 40 tahun dengan satu senjata: disiplin menabung + investasi masif di aset produktif. Kamu sudah punya disiplin itu — sekarang jadikan investasimu lebih beragam."`;
+
+        } else if (skor <= 80) {
+            negara = "Amerika Serikat"; bendera = "🇺🇸";
+            pertumbuhan = "+2,8%"; negaraRank = "Ekonomi ke-1 dunia (2024)";
+            kelasCard = "nc-hijau"; kelasTag = "hijau"; kelasMotivasi = "mv-hijau";
+            deskripsi = `Keuanganmu sudah di level <b>Amerika Serikat</b> — dan ini analogi yang sangat pas. AS adalah ekonomi terbesar dunia, tapi juga punya <b>utang nasional $33 triliun</b>. Paradoksnya: mereka tetap makmur karena <b>aset dan arus kasnya jauh melampaui utang</b>. Persis seperti kondisimu — <b>mungkin masih ada sisa utang, tapi kekayaan bersihmu positif, surplus konsisten, dan investasimu sudah berjalan</b>. AS tidak takut berutang karena mereka tahu cara menghasilkan jauh lebih besar dari yang dipinjam.`;
+            tags = ["Kekayaan bersih positif & terus tumbuh", "Surplus konsisten & kuat setiap bulan", "Utang ada tapi terkontrol & produktif", "Investasi terdiversifikasi dengan baik"];
+            motivasi = `"AS punya utang terbesar di dunia tapi tetap jadi ekonomi nomor 1 — karena aset dan arus kasnya jauh melampaui utang. Kamu sudah di posisi serupa. Sekarang: buat setiap rupiahmu bekerja lebih keras."`;
+
+        } else if (skor <= 92) {
+            negara = "Jepang"; bendera = "🇯🇵";
+            pertumbuhan = "+0,9%"; negaraRank = "Ekonomi ke-4 dunia (2024)";
+            kelasCard = "nc-hijau"; kelasTag = "hijau"; kelasMotivasi = "mv-hijau";
+            deskripsi = `Posisimu sudah di level <b>Jepang</b> — dan ini cerminan yang sangat akurat. Jepang punya filosofi keuangan <i>kakeibo</i>: <b>setiap sen dicatat, setiap pengeluaran direncanakan, dan tabungan adalah prioritas utama — bukan sisa dari pengeluaran</b>. Rata-rata rumah tangga Jepang menyimpan 20–30% pendapatannya secara konsisten. Hasilnya: dana darurat sangat kuat, utang terkontrol, dan kekayaan rumah tangga Jepang adalah <b>salah satu tertinggi di dunia</b>. Kamu sudah menjalani filosofi Jepang itu — disiplin, terencana, tidak tergoda jalan pintas.`;
+            tags = ["Dana darurat sangat kuat & konsisten", "Pengeluaran terencana & terdisiplin", "Kekayaan bersih tumbuh stabil setiap tahun", "Investasi jangka panjang berjalan optimal"];
+            motivasi = `"Jepang tidak kaya karena beruntung — mereka kaya karena tidak pernah berhenti mencatat, merencanakan, dan menabung. Hasilnya: salah satu kekayaan rumah tangga tertinggi di dunia. Kamu sudah punya mentalitas itu."`;
+
+        } else {
+            negara = "Singapura"; bendera = "🇸🇬";
+            pertumbuhan = "+3,4%"; negaraRank = "Ekonomi ke-36 dunia | PDB per kapita ke-3 dunia (2024)";
+            kelasCard = "nc-hijau"; kelasTag = "hijau"; kelasMotivasi = "mv-hijau";
+            deskripsi = `LUAR BIASA! Keuanganmu sudah di level <b>Singapura</b> — dan ini analogi yang paling tepat. Singapura <b>tidak punya minyak, tidak punya tanah luas, tidak punya sumber daya alam apapun</b> — tapi jadi negara dengan PDB per kapita ke-3 di dunia. Rahasianya: <b>sistem tabungan wajib CPF (20–37% gaji langsung masuk investasi otomatis), surplus anggaran konsisten setiap tahun, cadangan devisa yang menggunung, dan investasi via Temasek & GIC yang menghasilkan triliunan dolar</b>. Persis seperti kamu sekarang: <b>surplus besar, utang minimal, cadangan tak tergoyahkan, dan investasimu berjalan hampir autopilot</b>.`;
+            tags = ["Surplus sangat besar & konsisten", "Cadangan darurat tak tergoyahkan", "Utang minimal atau sudah lunas", "Investasi autopilot — membangun warisan keluarga"];
+            motivasi = `"Singapura buktikan: bukan BERAPA yang kamu punya, tapi BAGAIMANA mengelolanya. Tanpa sumber daya alam apapun, mereka jadi terkaya ke-3 di dunia. Kamu sudah membuktikan hal yang sama untuk keluargamu."`;
+        }
+
+        // Progress bar (5 level)
+        let levelAktif = skor <= 30 ? 1 : skor <= 50 ? 2 : skor <= 68 ? 3 : skor <= 84 ? 4 : 5;
+        let levelWarna = skor <= 45 ? 'merah' : skor <= 68 ? 'kuning' : 'hijau';
+        let progressSteps = '';
+        let levelNama = ['🇻🇪 Kritis', '🇮🇩 Berkembang', '🇨🇳 Menengah', '🇺🇸 Maju', '🇸🇬 Elite'];
+        for (let i = 1; i <= 5; i++) {
+            let cls = i <= levelAktif ? `aktif-${levelWarna}` : '';
+            progressSteps += `<div class="progress-step ${cls}"></div>`;
+        }
+
+        let tagsHTML = tags.map(t => `<span class="negara-tag ${kelasTag}">${t}</span>`).join('');
+
+        return `
+        <div class="negara-card ${kelasCard}">
+            <div class="negara-header">
+                <div class="negara-bendera">${bendera}</div>
+                <div>
+                    <div class="negara-label">🌍 Analogi Posisi Ekonomi Keluarga Kamu</div>
+                    <div class="negara-nama">${negara}</div>
+                    <div style="font-size:12px; color:#888; margin-top:2px;">${negaraRank}</div>
+                </div>
+                <div style="margin-left:auto; text-align:center;">
+                    <div style="background:#ecf0f1; border-radius:10px; padding:8px 14px; margin-bottom:6px;">
+                        <div style="font-size:11px; color:#888; text-transform:uppercase; letter-spacing:1px;">Skor</div>
+                        <div style="font-size:22px; font-weight:bold; color:#2c3e50;">${skor}</div>
+                        <div style="font-size:10px; color:#aaa;">dari 100</div>
+                    </div>
+                    <div style="background:${pertumbuhan.startsWith('-') ? '#fadbd8' : '#d5f5e3'}; border-radius:8px; padding:5px 10px;">
+                        <div style="font-size:10px; color:#888; text-transform:uppercase; letter-spacing:1px;">Pertumbuhan</div>
+                        <div style="font-size:16px; font-weight:bold; color:${pertumbuhan.startsWith('-') ? '#c0392b' : '#1e8449'};">${pertumbuhan}</div>
+                        <div style="font-size:10px; color:#aaa;">GDP/tahun</div>
+                    </div>
+                </div>
+            </div>
+            <div class="negara-deskripsi">${deskripsi}</div>
+            <div class="negara-mirip">${tagsHTML}</div>
+            <div class="negara-motivasi ${kelasMotivasi}">${motivasi}</div>
+            <div class="negara-progress">
+                <div class="negara-progress-label">Perjalanan menuju kemakmuran finansial keluarga:</div>
+                <div class="progress-track">${progressSteps}</div>
+                <div class="progress-step-labels">${levelNama.map((n,i) => `<span style="${i+1===levelAktif?'font-weight:bold;color:#2c3e50;':''}">${n}</span>`).join('')}</div>
+            </div>
+        </div>`;
     }
 
     function buatItemRekomendasi(prioritas, icon, judul, detail, labelAksi, kelasAksi) {
@@ -405,6 +805,9 @@
                 '🎯 Kembangkan Lebih Jauh', 'aksi-hijau'));
         }
 
+        // ── Kartu Negara ──
+        let kartuNegara = generateKartuNegara(X, C, I, M, neraca, rasioUtang, dayaTahan, netWorth, sisaUtang, tabungan, emas, pensiun, motor);
+
         // ── Bangun HTML ──
         let html = `
         <div class="rekomendasi-wrapper">
@@ -415,6 +818,7 @@
                     <div class="status-sub">${faseSub}</div>
                 </div>
             </div>
+            ${kartuNegara}
             ${summaryHTML}
             <div class="divider-label">📋 Rencana Aksi Konkrit</div>
             <div class="rekomendasi-list">
